@@ -4,16 +4,22 @@ from PIL import Image
 
 app = Flask(__name__)
 
+@app.route("/")
+def home():
+    return jsonify({
+        "status": "OCR API working",
+        "endpoint": "/ocr"
+    })
+
 @app.route("/ocr", methods=["POST"])
 def ocr():
 
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"})
 
-    file = request.files["image"]
-
-    # اللغة من الطلب (افتراضي عربي)
     language = request.form.get("language", "ara")
+
+    file = request.files["image"]
 
     path = "/tmp/m.png"
     file.save(path)
@@ -44,5 +50,3 @@ def ocr():
         })
     else:
         return jsonify(data)
-
-app.run(host="0.0.0.0", port=5000)
